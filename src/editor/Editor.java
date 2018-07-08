@@ -10,6 +10,7 @@ import editor.principal.Principal;
 public class Editor {
     
     public static void main(String [] args){
+        System.out.println("Hola Mundo");
        new Principal().setVisible(true);
     }
 }

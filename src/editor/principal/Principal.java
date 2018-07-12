@@ -2,6 +2,7 @@ package editor.principal;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,15 +36,18 @@ public class Principal extends javax.swing.JFrame {
     private void desing() {
         this.getContentPane().setBackground(new Color(200, 0, 0));
         this.setLocationRelativeTo(null);
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/editor/multimedia/Editor.png")));
+        this.setTitle("Editor de Texto");
         txtEditor.setBackground(new Color(0, 0, 0));
         txtEditor.setForeground(Color.red);
         txtEditor.setFont(font);
+        txtEditor.setEnabled(false);
     }
 
-    private void Mostrar() {
+    private void Mostrar(File archivo) {
         String cadena, contenedor = "";
         try {
-            FileReader leer = new FileReader("archivo.txt");
+            FileReader leer = new FileReader(archivo);
             BufferedReader bufer = new BufferedReader(leer);
 
             while ((cadena = bufer.readLine()) != null) {
@@ -55,33 +59,31 @@ public class Principal extends javax.swing.JFrame {
         txtEditor.setText(contenedor);
     }
 
-    private void Limpiar() {
+    private void Guardar() {
         String nuevo;
         try {
             this.Limpiar();
-            FileWriter copia = new FileWriter("archivo.txt");
-            
+            FileWriter copia = new FileWriter(archivo);
+
             nuevo = txtEditor.getText().replace("\n", "\r\n");
-            
+
             PrintWriter pw = new PrintWriter(copia);
             pw.print(nuevo);
             copia.close();
-            this.Mostrar();
+            this.Mostrar(archivo);
             JOptionPane.showMessageDialog(rootPane, "archivo guardado");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(rootPane, ex.getMessage());
         }
     }
 
-    private void Guardar() {
-        String cadena, contenedor = "";
+    private void Limpiar() {
         try {
-            FileWriter escribir = new FileWriter("archivo.txt");
+            FileWriter escribir = new FileWriter(archivo);
             BufferedWriter bufer = new BufferedWriter(escribir);
             bufer.write("");
             bufer.close();
             escribir.close();
-            txtEditor.setText(null);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(rootPane, ex.getMessage());
         }
@@ -92,16 +94,22 @@ public class Principal extends javax.swing.JFrame {
         if (selecionar.showDialog(rootPane, "Abrir archivo") == JFileChooser.APPROVE_OPTION) {
             archivo = selecionar.getSelectedFile();
             if (archivo.canRead()) {
-                try {
-                    abrir = new FileInputStream(archivo);
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(rootPane, ex.getMessage());
+                if (archivo.getName().endsWith("txt")) {
+                    try {
+                        abrir = new FileInputStream(archivo);
+                        txtEditor.setEnabled(true);
+                        this.Mostrar(archivo);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(rootPane, ex.getMessage());
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(rootPane, "Extención de archivo incorrecta");
                 }
             } else {
-
+                JOptionPane.showMessageDialog(rootPane, "Error no se puede leer el archivo");
             }
         } else {
-
+            JOptionPane.showMessageDialog(rootPane, "No seleccionaste nada");
         }
 
     }
@@ -220,6 +228,11 @@ public class Principal extends javax.swing.JFrame {
 
         jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/cancelar.png"))); // NOI18N
         jMenuItem11.setText("Salir");
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem11);
 
         jMenuBar1.add(jMenu1);
@@ -290,6 +303,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void menuLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLimpiarActionPerformed
         this.Limpiar();
+        txtEditor.setText(null);
     }//GEN-LAST:event_menuLimpiarActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -297,7 +311,8 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void menuAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAbrirActionPerformed
-
+        txtEditor.setText(null);
+        this.Abrir();
     }//GEN-LAST:event_menuAbrirActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
@@ -306,7 +321,6 @@ public class Principal extends javax.swing.JFrame {
 
     private void menuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGuardarActionPerformed
         this.Guardar();
-
     }//GEN-LAST:event_menuGuardarActionPerformed
 
     private void btnGuardarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseEntered
@@ -327,12 +341,20 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarMouseExited
 
     private void btnGuardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGuardarMouseClicked
-
+        this.Guardar();
     }//GEN-LAST:event_btnGuardarMouseClicked
 
     private void btnLimpiarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLimpiarMouseClicked
-
+        this.Limpiar();
+        txtEditor.setText(null);
     }//GEN-LAST:event_btnLimpiarMouseClicked
+
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+        int confirmacion = JOptionPane.showConfirmDialog(rootPane, "¿Estas Seguro de eliminar este registro?", "Confirmar", 2);
+        if (confirmacion == 0) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
 
     public void main() {
         java.awt.EventQueue.invokeLater(() -> {

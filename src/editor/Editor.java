@@ -3,7 +3,7 @@ package editor;
 import editor.principal.Principal;
 
 /**
- * @author ercheco
+ * @author Erik Guzman
  * @date 07/July/2018
 */
 

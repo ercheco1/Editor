@@ -24,8 +24,7 @@ public class Principal extends javax.swing.JFrame {
     private File archivo;
     private FileInputStream abrir;
     private FileOutputStream cerrar;
-    private String ruta;
-    private boolean resultado;
+
     Font font = new Font("Agency FB", Font.BOLD, 20);
 
     public Principal() {
@@ -38,10 +37,13 @@ public class Principal extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/editor/multimedia/Editor.png")));
         this.setTitle("Editor de Texto");
+        panelLadito.setBackground(new Color(0 ,0 ,0));
         txtEditor.setBackground(new Color(0, 0, 0));
         txtEditor.setForeground(Color.red);
         txtEditor.setFont(font);
         txtEditor.setEnabled(false);
+        btnGuardar.setForeground(Color.red);
+        btnLimpiar.setForeground(Color.red);
     }
 
     private void Mostrar(File archivo) {
@@ -102,7 +104,7 @@ public class Principal extends javax.swing.JFrame {
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(rootPane, ex.getMessage());
                     }
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(rootPane, "Extención de archivo incorrecta");
                 }
             } else {
@@ -114,12 +116,41 @@ public class Principal extends javax.swing.JFrame {
 
     }
 
+    private String Datos(File archivo, String contenido) {
+        String resultado = null;
+        try {
+            cerrar = new FileOutputStream(archivo);
+            byte[] bytes = contenido.getBytes();
+            cerrar.write(bytes);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage());
+        }
+        return resultado;
+    }
+
+    private void Nuevo() {
+        JFileChooser seleccionar = new JFileChooser();
+        if (seleccionar.showDialog(rootPane, "Guardar el archivo") == JFileChooser.APPROVE_OPTION) {
+            archivo = seleccionar.getSelectedFile();
+            if (archivo.getName().endsWith("txt")) {
+                String contenido = txtEditor.getText();
+                String resultado = this.Datos(archivo, contenido);
+                this.Mostrar(archivo);
+                txtEditor.setEnabled(true);
+                JOptionPane.showMessageDialog(rootPane, "Archivo creado ");
+            }else{
+                JOptionPane.showMessageDialog(rootPane, "Ingresa el archivo con la extencion txt");
+            }
+        } else {
+            JOptionPane.showMessageDialog(rootPane, "No seleccionaste la ubicacion");
+        }
+    }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         txtEditor = new javax.swing.JTextArea();
-        jPanel1 = new javax.swing.JPanel();
+        panelLadito = new javax.swing.JPanel();
         btnGuardar = new javax.swing.JLabel();
         btnLimpiar = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -131,9 +162,9 @@ public class Principal extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        menuCopear = new javax.swing.JMenuItem();
+        menuCortar = new javax.swing.JMenuItem();
+        menuPegar = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
         menuLimpiar = new javax.swing.JMenuItem();
@@ -144,7 +175,7 @@ public class Principal extends javax.swing.JFrame {
         txtEditor.setRows(5);
         jScrollPane1.setViewportView(txtEditor);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        panelLadito.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/guardar.png"))); // NOI18N
         btnGuardar.setText("Guardar");
@@ -174,20 +205,20 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout panelLaditoLayout = new javax.swing.GroupLayout(panelLadito);
+        panelLadito.setLayout(panelLaditoLayout);
+        panelLaditoLayout.setHorizontalGroup(
+            panelLaditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLaditoLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelLaditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnLimpiar)
                     .addComponent(btnGuardar))
                 .addContainerGap(10, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        panelLaditoLayout.setVerticalGroup(
+            panelLaditoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLaditoLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(btnGuardar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -197,6 +228,7 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu1.setText("Archivo");
 
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/nuevo.png"))); // NOI18N
         jMenuItem1.setText("Nuevo");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -207,6 +239,7 @@ public class Principal extends javax.swing.JFrame {
         jMenu1.add(jMenuItem1);
         jMenu1.add(jSeparator1);
 
+        menuAbrir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
         menuAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/abrir.png"))); // NOI18N
         menuAbrir.setText("Abrir");
         menuAbrir.addActionListener(new java.awt.event.ActionListener() {
@@ -216,6 +249,7 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu1.add(menuAbrir);
 
+        menuGuardar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         menuGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/guardar.png"))); // NOI18N
         menuGuardar.setText("Guardar");
         menuGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -226,6 +260,7 @@ public class Principal extends javax.swing.JFrame {
         jMenu1.add(menuGuardar);
         jMenu1.add(jSeparator2);
 
+        jMenuItem11.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
         jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/cancelar.png"))); // NOI18N
         jMenuItem11.setText("Salir");
         jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
@@ -239,22 +274,41 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu2.setText("Edición");
 
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/copiar.png"))); // NOI18N
-        jMenuItem4.setText("Copiar");
-        jMenu2.add(jMenuItem4);
+        menuCopear.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        menuCopear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/copiar.png"))); // NOI18N
+        menuCopear.setText("Copiar");
+        menuCopear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuCopearActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuCopear);
 
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/cortar.png"))); // NOI18N
-        jMenuItem5.setText("Cortar");
-        jMenu2.add(jMenuItem5);
+        menuCortar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        menuCortar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/cortar.png"))); // NOI18N
+        menuCortar.setText("Cortar");
+        menuCortar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuCortarActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuCortar);
 
-        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/pegar.png"))); // NOI18N
-        jMenuItem6.setText("Pegar");
-        jMenu2.add(jMenuItem6);
+        menuPegar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        menuPegar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/pegar.png"))); // NOI18N
+        menuPegar.setText("Pegar");
+        menuPegar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuPegarActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuPegar);
 
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Más");
 
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/refrescar.png"))); // NOI18N
         jMenuItem7.setText("Recargar");
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
@@ -264,6 +318,7 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenu3.add(jMenuItem7);
 
+        menuLimpiar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
         menuLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/editor/multimedia/limpiar.png"))); // NOI18N
         menuLimpiar.setText("Limpiar");
         menuLimpiar.addActionListener(new java.awt.event.ActionListener() {
@@ -283,7 +338,7 @@ public class Principal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelLadito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
                 .addContainerGap())
@@ -294,7 +349,7 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jScrollPane1)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(panelLadito, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
@@ -307,7 +362,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_menuLimpiarActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-
+        this.Nuevo();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void menuAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAbrirActionPerformed
@@ -356,6 +411,18 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
+    private void menuCopearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCopearActionPerformed
+        txtEditor.copy();
+    }//GEN-LAST:event_menuCopearActionPerformed
+
+    private void menuCortarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCortarActionPerformed
+        txtEditor.cut();
+    }//GEN-LAST:event_menuCortarActionPerformed
+
+    private void menuPegarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPegarActionPerformed
+        txtEditor.paste();  
+    }//GEN-LAST:event_menuPegarActionPerformed
+
     public void main() {
         java.awt.EventQueue.invokeLater(() -> {
             new Principal().setVisible(true);
@@ -371,17 +438,17 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JMenuItem menuAbrir;
+    private javax.swing.JMenuItem menuCopear;
+    private javax.swing.JMenuItem menuCortar;
     private javax.swing.JMenuItem menuGuardar;
     private javax.swing.JMenuItem menuLimpiar;
+    private javax.swing.JMenuItem menuPegar;
+    private javax.swing.JPanel panelLadito;
     private javax.swing.JTextArea txtEditor;
     // End of variables declaration//GEN-END:variables
 }
